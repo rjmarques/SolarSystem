@@ -13,7 +13,7 @@ http.createServer( function(req, res) {
 
 	var filename = req.url || "index.html";
 	var ext = path.extname(filename);
-	var localPath = __dirname + "/dist";
+	var localPath = __dirname + "/build";
 	var validExtensions = {
 		".html" : "text/html",			
 		".js": "application/javascript", 
