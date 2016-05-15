@@ -95,8 +95,8 @@
 		light.castShadow = true;
 		light.shadow.camera.near = 1;
 		light.shadow.camera.far = 70000;
-		light.shadowMapWidth = 4096; 
-		light.shadowMapHeight = 4096;
+		light.shadow.mapSize.width = 4096;
+		light.shadow.mapSize.height = 4096;
 		light.shadow.bias = 0.01;
 		scene.add( light );
 	}

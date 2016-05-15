@@ -1,5 +1,5 @@
 var Planet = require('./planet');
-var glFactory = require('./glfactory');
+var glFactory = require('./utils/glfactory');
 
 function Mars() {
 	Planet.call(this, 687, 1.027, 600);	

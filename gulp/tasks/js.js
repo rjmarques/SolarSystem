@@ -20,6 +20,7 @@ gulp.task('js', ['clean'], function() {
 		.pipe(addsrc([config.src.lib + '/**/*.js']))
 		.pipe(order([		    
 		    config.src.lib + '/three/three*.js',
+		    config.src.lib + '/three/*geometry.js',
 		    config.src.lib + '/three/*Controls.js',
 		    config.src.lib + '/**/*.js',
 		    config.src.app + '/**/*.js',

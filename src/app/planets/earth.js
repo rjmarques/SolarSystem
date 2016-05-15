@@ -1,6 +1,6 @@
 var Planet = require('./planet');
 var Luna = require('./luna');
-var glFactory = require('./glfactory');
+var glFactory = require('./utils/glfactory');
 
 function Earth() {
 	Planet.call(this, 365, 1, 400);	

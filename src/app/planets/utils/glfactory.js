@@ -25,3 +25,17 @@ module.exports.createAstroObjMesh = function(textureLoader, config) {
 	
 	return mesh;
 };
+
+module.exports.createRingMesh = function(innerRadius, outerRadius, textureLoader, config) {
+	var geometry = new THREE.RingGeometry( innerRadius, outerRadius );
+	var material = new THREE.MeshPhongMaterial( {
+		map: textureLoader.load( config.map ),
+		side: THREE.DoubleSide,
+		alphaMap: textureLoader.load( config.alphaMap ),
+		transparent: true,
+		opacity: 0.7
+	} );
+	var mesh = new THREE.Mesh( geometry, material );
+	
+	return mesh;
+};

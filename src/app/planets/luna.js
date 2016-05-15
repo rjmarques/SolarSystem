@@ -1,5 +1,5 @@
 var Satellite = require('./satellite');
-var glFactory = require('./glfactory');
+var glFactory = require('./utils/glfactory');
 
 function Luna(planet) {
 	Satellite.call(this, planet, 27.33, 27.33, 80);	
