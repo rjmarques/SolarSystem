@@ -2,7 +2,7 @@ var Planet = require('./planet');
 var glFactory = require('./glfactory');
 
 function Venus() {
-	Planet.call(this, 224.7, -243.02, 150);	
+	Planet.call(this, 224.7, -243.02, 200);	
 }
 
 Venus.prototype = Object.create(Planet.prototype); 

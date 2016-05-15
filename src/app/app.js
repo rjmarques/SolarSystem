@@ -21,6 +21,8 @@
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.gammaInput = true;
 		renderer.gammaOutput = true;
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		document.body.appendChild( renderer.domElement );
 	
 		clock = new THREE.Clock();				
@@ -90,6 +92,12 @@
 	
 	function createSun() {
 		var light = new THREE.PointLight( 0xffffff, 1, 0 );
+		light.castShadow = true;
+		light.shadow.camera.near = 1;
+		light.shadow.camera.far = 70000;
+		light.shadowMapWidth = 4096; 
+		light.shadowMapHeight = 4096;
+		light.shadow.bias = 0.01;
 		scene.add( light );
 	}
 

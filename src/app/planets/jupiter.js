@@ -2,7 +2,7 @@ var Planet = require('./planet');
 var glFactory = require('./glfactory');
 
 function Jupiter() {
-	Planet.call(this, 4222.16, 0.41, 850);	
+	Planet.call(this, 4222.16, 0.41, 1100);	
 }
 
 Jupiter.prototype = Object.create(Planet.prototype); 

@@ -1,29 +1,19 @@
 var Planet = require('./planet');
+var Luna = require('./luna');
 var glFactory = require('./glfactory');
 
 function Earth() {
-	Planet.call(this, 365, 1, 200);	
+	Planet.call(this, 365, 1, 400);	
 }
 
-Earth.prototype = Object.create(Planet.prototype); 
-
-Earth.prototype.update = function(elapsedTime) {
-	// call super
-	Planet.prototype.update.call(this, elapsedTime);
-	
-	// update moon
-	// TODO
-};
+Earth.prototype = Object.create(Planet.prototype);
 
 Earth.prototype.addToScene = function(scene, textureLoader) {
-	this.object = createEarth(textureLoader);
-	var orbit = glFactory.createOrbitMesh(this.orbitRadius);
-	
-	scene.add(this.object);
-	scene.add(orbit);
+	createEarth(scene, textureLoader, this);
+	createMoon(scene, textureLoader, this);
 };
 
-function createEarth(textureLoader) {
+function createEarth(scene, textureLoader, earth) {	
 	var earthGeometry = new THREE.SphereGeometry( 20, 32, 32 );
 	var earthMaterial = new THREE.MeshPhongMaterial( {
 		shininess: 15,
@@ -33,6 +23,7 @@ function createEarth(textureLoader) {
 		normalScale: new THREE.Vector2( 0.85, 0.85 )
 	} );
 	var earthMesh = new THREE.Mesh( earthGeometry, earthMaterial );
+	earthMesh.receiveShadow = true;
 	
 	var materialClouds = new THREE.MeshLambertMaterial( {
 		map: textureLoader.load( "/img/earth_clouds_2048.png" ),
@@ -40,12 +31,25 @@ function createEarth(textureLoader) {
 	} );
 	var earthCloudsMesh = new THREE.Mesh( earthGeometry, materialClouds );
 	
-	var earth = new THREE.Object3D();
-	earth.add(earthMesh);
-	earth.add(earthCloudsMesh);
-	earth.rotation.z = -0.41; // earth's tilt TODO IMPROVE
+	var earthSystem = new THREE.Object3D();
+	earthSystem.add(earthMesh);
+	earthSystem.add(earthCloudsMesh);
+	earthSystem.rotation.z = -0.41; // earth's tilt TODO IMPROVE
 	
-	return earth;
+	var orbit = glFactory.createOrbitMesh(earth.orbitRadius);
+	
+	scene.add(earthSystem);
+	scene.add(orbit);
+	
+	earth.object = earthSystem; 
+}
+
+function createMoon(scene, textureLoader, earth) {
+	// create the moon
+	var moon = new Luna(earth);
+	earth.moons.push(moon);
+	
+	moon.addToScene(scene, textureLoader);
 }
 
 module.exports = Earth; 
