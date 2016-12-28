@@ -1,4 +1,4 @@
-/** Holds the base definition of a planet **/
+/** Holds the base definition of a natural satellite **/
 const THREE = require('three');
 
 import { AstronomicalObject } from './astronomical-object';

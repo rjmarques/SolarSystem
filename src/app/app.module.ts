@@ -8,6 +8,7 @@ import { routing, appRoutingProviders } from './app.routing';
 import { AppComponent }   from './app.component';
 
 import { SharedModule } from './shared';
+import { GLModule } from './glcomponent';
 
 @NgModule({
 	imports: [
@@ -15,6 +16,7 @@ import { SharedModule } from './shared';
 		HttpModule,
 		BrowserModule,		
 		SharedModule,
+		GLModule,
 		routing
 	],
 	declarations: [
