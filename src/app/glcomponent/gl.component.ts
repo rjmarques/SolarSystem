@@ -19,11 +19,13 @@ export class GLComponent {
 	private camera: any;
 	private renderer: any;
 	private clock: any;
+	private sunClock: any;
 	private textureLoader: any;
 	private controls: any;
 
 	// horizon and sun
 	private skyBox: any;
+	private sun: any;
 	private light: any;
 
 	// planets
@@ -48,7 +50,7 @@ export class GLComponent {
 		this.scene.fog = new THREE.Fog( 0x000000, 3500, 15000 );
 		this.scene.fog.color.setHSL( 0.51, 0.4, 0.01 );
 		
-		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 70000 );
+		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 140000 );
 		this.camera.position.z = -400;
 		this.camera.position.y = 50;
 
@@ -62,7 +64,8 @@ export class GLComponent {
 		
 		this.canvasTarget.nativeElement.appendChild( this.renderer.domElement );
 	
-		this.clock = new THREE.Clock();				
+		this.clock = new THREE.Clock();
+		this.sunClock = new THREE.Clock();		
 		
 		this.textureLoader = new THREE.TextureLoader();
 		
@@ -93,7 +96,7 @@ export class GLComponent {
 	}
 
 	private createMilkyway(): void { // TODO extract to service
-		let skyBoxGeometry = new THREE.SphereGeometry(32000, 60, 40);
+		let skyBoxGeometry = new THREE.SphereGeometry(64000, 60, 40);
 	    let uniforms = {
 	      texture: { type: 't', value: this.textureLoader.load(require('./images/milkyway.jpg')) }
 	    };
@@ -110,14 +113,36 @@ export class GLComponent {
 	}
 	
 	private createSun(): void { // TODO extract to service and improve
+		// light source
 		this.light = new THREE.PointLight( 0xffffff, 1, 0 );
 		this.light.castShadow = true;
 		this.light.shadow.camera.near = 1;
-		this.light.shadow.camera.far = 70000;
+		this.light.shadow.camera.far = 140000;
 		this.light.shadow.mapSize.width = 4096;
 		this.light.shadow.mapSize.height = 4096;
 		this.light.shadow.bias = 0.01;
 		this.scene.add( this.light );
+
+		// sun mesh
+		let geometry = new THREE.SphereGeometry( 170, 32, 32 );
+		
+		let uniforms = {
+	      texture1: { type: 't', value: this.textureLoader.load(require('./images/sun_1024.jpg')) },
+		  texture2: { type: 't', value: this.textureLoader.load(require('./images/sun_noise_256.png')) },
+		  time: { type: 'f', value: 1.0 }
+	    };
+		uniforms.texture1.value.wrapS = uniforms.texture1.value.wrapT = THREE.RepeatWrapping;
+		uniforms.texture2.value.wrapS = uniforms.texture2.value.wrapT = THREE.RepeatWrapping;
+
+	    let sunMaterial = new THREE.ShaderMaterial( {
+	      uniforms:       uniforms,
+	      vertexShader:   require('./shaders/sun-vertex.shader'),
+	      fragmentShader: require('./shaders/sun-fragment.shader')
+	    });
+
+		this.sun = new THREE.Mesh( geometry, sunMaterial );
+		
+		this.scene.add(this.sun);
 	}
 
 	private animate(): void {
@@ -127,12 +152,13 @@ export class GLComponent {
 		this.render();
 	}
 
-	private render(): void {					
+	private render(): void {				
 		this.updateScene();
 		this.renderer.render( this.scene, this.camera );
 	}
 
     private updateScene(): void {
+		// update planets
         let elapsedTime = this.clock.getElapsedTime();
 
 		this.planetsService.updatePlanet(this.mercury, elapsedTime);
@@ -143,9 +169,13 @@ export class GLComponent {
 		this.planetsService.updatePlanet(this.saturn, elapsedTime);
 		this.planetsService.updatePlanet(this.uranus, elapsedTime);
 		this.planetsService.updatePlanet(this.neptune, elapsedTime);
+
+		// update sun
+		var delta = this.sunClock.getDelta() / 7;
+		this.sun.material.uniforms.time.value += delta;
 		
-		this.controls.update();
-		
+		// user controls
+		this.controls.update();		
     }
 
 	private onWindowResize(): void {
