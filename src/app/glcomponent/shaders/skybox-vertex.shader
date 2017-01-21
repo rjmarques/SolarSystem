@@ -1,6 +1,4 @@
 varying vec2 vUV;
-varying float vDensity;
-varying float vDiff;
 
 void main() {
 	vUV = uv;
