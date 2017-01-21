@@ -62,7 +62,6 @@ export class PlanetsService {
 			normalScale: new THREE.Vector2( 0.85, 0.85 )
 		} );
 		let earthMesh = new THREE.Mesh( earthGeometry, earthMaterial );
-		earthMesh.receiveShadow = true;
 		
 		let materialClouds = new THREE.MeshLambertMaterial( {
 			map: textureLoader.load( require("./earth/images/earth_clouds_2048.png") ),
@@ -238,7 +237,11 @@ export class PlanetsService {
 
 		let path = new THREE.Path( curve.getPoints( 50 ) );
 		let geometry = path.createPointsGeometry( 50 );
-		let material = new THREE.LineBasicMaterial( { color : 0x333333 } );
+		let material = new THREE.LineBasicMaterial( { 
+			color : 0x333333,
+			transparent: true,
+			opacity: 0.4
+		} );
 		let orbit = new THREE.Line( geometry, material );
 		orbit.rotation.x = 90 * Math.PI/180; // tilt orbit vertically
 			
