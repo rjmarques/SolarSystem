@@ -19,9 +19,44 @@ import { Neptune } from './neptune/neptune';
 @Injectable()
 export class PlanetsService {
 
-	private revolutionTime: number = 2000; // time is takes for a full earth day, in miliseconds
+	private readonly REVOLUTION_TIME: number = 2000; // time is takes for a full earth day, in miliseconds
 
-	public createMercury(scene: any, textureLoader: any): Planet {
+	private clock: any = new THREE.Clock();	;
+
+	private mercury: Planet; 
+	private venus: Planet;
+	private earth: Planet;
+	private mars: Planet;
+	private jupiter: Planet;
+	private saturn: Planet;
+	private uranus: Planet;
+	private neptune: Planet;
+
+	public createPlanets(scene: any, textureLoader: any) {
+		this.mercury = this.createMercury(scene, textureLoader);
+		this.venus = this.createVenus(scene, textureLoader);
+		this.earth = this.createEarth(scene, textureLoader);
+		this.mars = this.createMars(scene, textureLoader);
+		this.jupiter = this.createJupiter(scene, textureLoader);
+		this.saturn = this.createSaturn(scene, textureLoader);
+		this.uranus = this.createUranus(scene, textureLoader);
+		this.neptune = this.createNeptune(scene, textureLoader);
+	}
+
+	public update() {
+		let elapsedTime = this.clock.getElapsedTime();
+
+		this.updatePlanet(this.mercury, elapsedTime);
+		this.updatePlanet(this.venus, elapsedTime);
+		this.updatePlanet(this.earth, elapsedTime);
+		this.updatePlanet(this.mars, elapsedTime);
+		this.updatePlanet(this.jupiter, elapsedTime);
+		this.updatePlanet(this.saturn, elapsedTime);
+		this.updatePlanet(this.uranus, elapsedTime);
+		this.updatePlanet(this.neptune, elapsedTime);
+	}
+
+	private createMercury(scene: any, textureLoader: any): Planet {
 		let glObject = this.createAstroObjMesh(textureLoader, {
 			radius: 10,
 			map: require("./mercury/images/mercury_2048.jpg")
@@ -36,7 +71,7 @@ export class PlanetsService {
 		return mercury;
 	}
 
-	public createVenus(scene: any, textureLoader: any): Planet {
+	private createVenus(scene: any, textureLoader: any): Planet {
 		let glObject = this.createAstroObjMesh(textureLoader, {
 			radius: 12,
 			map: require("./venus/images/venus_1024.jpg")
@@ -51,7 +86,7 @@ export class PlanetsService {
 		return venus;
 	}
 
-	public createEarth(scene: any, textureLoader: any): Planet {
+	private createEarth(scene: any, textureLoader: any): Planet {
 		// earth creation
 		let earthGeometry = new THREE.SphereGeometry( 20, 32, 32 );
 		let earthMaterial = new THREE.MeshPhongMaterial( {
@@ -97,7 +132,7 @@ export class PlanetsService {
 		return earth;
 	}
 
-	public createMars(scene: any, textureLoader: any): Planet {
+	private createMars(scene: any, textureLoader: any): Planet {
 		let glObject = this.createAstroObjMesh(textureLoader, {
 			radius: 15,
 			map: require("./mars/images/mars_2048.jpg")
@@ -112,7 +147,7 @@ export class PlanetsService {
 		return mars;
 	}
 
-	public createJupiter(scene: any, textureLoader: any): Planet {
+	private createJupiter(scene: any, textureLoader: any): Planet {
 		let glObject = this.createAstroObjMesh(textureLoader, {
 			radius: 111.94,
 			map: require("./jupiter/images/jupiter_2048.jpg")
@@ -127,7 +162,7 @@ export class PlanetsService {
 		return jupiter;
 	}
 
-	public createSaturn(scene: any, textureLoader: any): Planet {
+	private createSaturn(scene: any, textureLoader: any): Planet {
 		let planetRadius = 50;
 		let glObject = this.createAstroObjMesh(textureLoader, {
 			radius: planetRadius,
@@ -150,7 +185,7 @@ export class PlanetsService {
 		return saturn;
 	}
 
-	public createUranus(scene: any, textureLoader: any): Planet {
+	private createUranus(scene: any, textureLoader: any): Planet {
 		let glObject = this.createAstroObjMesh(textureLoader, {
 			radius: 50,
 			map: require("./uranus/images/uranus_1024.jpg")
@@ -165,7 +200,7 @@ export class PlanetsService {
 		return uranus;
 	}
 
-	public createNeptune(scene: any, textureLoader: any): Planet {
+	private createNeptune(scene: any, textureLoader: any): Planet {
 		let glObject = this.createAstroObjMesh(textureLoader, {
 			radius: 60,
 			map: require("./neptune/images/neptune_2048.jpg")
@@ -180,7 +215,7 @@ export class PlanetsService {
 		return neptune;
 	}
 
-	public updatePlanet(planet: Planet, elapsedTime: number): void {
+	private updatePlanet(planet: Planet, elapsedTime: number): void {
 		this.updateAstroObject(planet, elapsedTime);
 
 		// update ring position
@@ -200,7 +235,7 @@ export class PlanetsService {
 
 	private updateAstroObject(astro: AstronomicalObject, elapsedTime: number, orbitCentre: any = new THREE.Vector3()): void {
 		// orbit update
-		let orbitTime = this.revolutionTime*astro.getOrbitTimeByEarthDays();
+		let orbitTime = this.REVOLUTION_TIME*astro.getOrbitTimeByEarthDays();
 		let orbitDegPerSec = (360/orbitTime)*1000;
 		let orbitAngle = (orbitDegPerSec * elapsedTime) % 360;	
 		
@@ -210,7 +245,7 @@ export class PlanetsService {
 		glObject.position.add(orbitCentre);
 
 		// rotation update
-		let rotationTime = this.revolutionTime*astro.getRotationTimeByEarthDays();
+		let rotationTime = this.REVOLUTION_TIME*astro.getRotationTimeByEarthDays();
 		let degPerSec = (360/rotationTime)*1000;
 		let rotationAngle = (degPerSec * elapsedTime) % 360;
 		glObject.rotation.y = rotationAngle * Math.PI / 180;

@@ -19,22 +19,11 @@ export class GLComponent {
 	private scene: any;
 	private camera: any;
 	private renderer: any;
-	private clock: any;
 	private textureLoader: any;
 	private controls: any;
 
 	// horizon and sun
 	private skyBox: any;
-
-	// planets
-	private mercury: Planet; 
-	private venus: Planet;
-	private earth: Planet;
-	private mars: Planet;
-	private jupiter: Planet;
-	private saturn: Planet;
-	private uranus: Planet;
-	private neptune: Planet;
 
 	constructor(private planetsService: PlanetsService, private sunService: SunService) {}
 
@@ -60,8 +49,6 @@ export class GLComponent {
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		
 		this.canvasTarget.nativeElement.appendChild( this.renderer.domElement );
-	
-		this.clock = new THREE.Clock();	
 		
 		this.textureLoader = new THREE.TextureLoader();
 		
@@ -79,16 +66,7 @@ export class GLComponent {
 		this.createMilkyway();
 
 		this.sunService.createSun(this.scene, this.camera, this.textureLoader);
-		
-		// create planets
-		this.mercury = this.planetsService.createMercury(this.scene, this.textureLoader);
-		this.venus = this.planetsService.createVenus(this.scene, this.textureLoader);
-		this.earth = this.planetsService.createEarth(this.scene, this.textureLoader);
-		this.mars = this.planetsService.createMars(this.scene, this.textureLoader);
-		this.jupiter = this.planetsService.createJupiter(this.scene, this.textureLoader);
-		this.saturn = this.planetsService.createSaturn(this.scene, this.textureLoader);
-		this.uranus = this.planetsService.createUranus(this.scene, this.textureLoader);
-		this.neptune = this.planetsService.createNeptune(this.scene, this.textureLoader);
+		this.planetsService.createPlanets(this.scene, this.textureLoader);
 	}
 
 	private createMilkyway(): void { // TODO extract to service
@@ -122,16 +100,7 @@ export class GLComponent {
 
 	private updateScene(): void {
 		// update planets
-		let elapsedTime = this.clock.getElapsedTime();
-
-		this.planetsService.updatePlanet(this.mercury, elapsedTime);
-		this.planetsService.updatePlanet(this.venus, elapsedTime);
-		this.planetsService.updatePlanet(this.earth, elapsedTime);
-		this.planetsService.updatePlanet(this.mars, elapsedTime);
-		this.planetsService.updatePlanet(this.jupiter, elapsedTime);
-		this.planetsService.updatePlanet(this.saturn, elapsedTime);
-		this.planetsService.updatePlanet(this.uranus, elapsedTime);
-		this.planetsService.updatePlanet(this.neptune, elapsedTime);
+		this.planetsService.update();
 
 		// update sun
 		this.sunService.update(this.camera);
