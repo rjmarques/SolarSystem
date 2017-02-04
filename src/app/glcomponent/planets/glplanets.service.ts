@@ -32,6 +32,9 @@ export class GLPlanetsService {
 	private uranus: Planet;
 	private neptune: Planet;
 
+	private planetsByName: {[name: string]: Planet};
+	private focussedPlanet: Planet;
+
 	public createPlanets(scene: any, textureLoader: any) {
 		this.mercury = this.createMercury(scene, textureLoader);
 		this.venus = this.createVenus(scene, textureLoader);
@@ -41,9 +44,20 @@ export class GLPlanetsService {
 		this.saturn = this.createSaturn(scene, textureLoader);
 		this.uranus = this.createUranus(scene, textureLoader);
 		this.neptune = this.createNeptune(scene, textureLoader);
+
+		this.planetsByName = {
+			'mercury': this.mercury,
+			'venus': this.venus,
+			'earth': this.earth,
+			'mars': this.mars,
+			'jupiter': this.jupiter,
+			'saturn': this.saturn,
+			'uranus': this.uranus,
+			'neptune': this.neptune
+		};
 	}
 
-	public update() {
+	public update(controls: any, camera: any) {
 		let elapsedTime = this.clock.getElapsedTime();
 
 		this.updatePlanet(this.mercury, elapsedTime);
@@ -54,6 +68,27 @@ export class GLPlanetsService {
 		this.updatePlanet(this.saturn, elapsedTime);
 		this.updatePlanet(this.uranus, elapsedTime);
 		this.updatePlanet(this.neptune, elapsedTime);
+
+		if(this.focussedPlanet) {
+			let planetPos = this.focussedPlanet.getGLObject().position;
+			controls.target.copy(planetPos);
+
+			let planetRadius = this.focussedPlanet.getGLObject().planetRadius * 4;
+			let cameraPos = this.getPointInBetween(planetPos, new THREE.Vector3(0,0,0), planetRadius);
+			camera.position.copy(cameraPos);
+		}
+	}
+
+	public focusOn(planetName: string): void {
+		let planet: Planet = this.planetsByName[planetName];
+		if(planet) {
+			this.focussedPlanet = planet;
+		}
+	}
+
+	private getPointInBetween(pointA: any, pointB: any, distance: any): any {
+		let dir = pointB.clone().sub(pointA).normalize().multiplyScalar(distance);
+		return pointA.clone().add(dir);
 	}
 
 	private createMercury(scene: any, textureLoader: any): Planet {
@@ -88,7 +123,8 @@ export class GLPlanetsService {
 
 	private createEarth(scene: any, textureLoader: any): Planet {
 		// earth creation
-		let earthGeometry = new THREE.SphereGeometry( 20, 32, 32 );
+		let earthRadius = 20;
+		let earthGeometry = new THREE.SphereGeometry( earthRadius, 32, 32 );
 		let earthMaterial = new THREE.MeshPhongMaterial( {
 			shininess: 15,
 			map: textureLoader.load( require('./earth/images/earth_atmos_2048.jpg') ),
@@ -107,7 +143,8 @@ export class GLPlanetsService {
 		let earthSystem = new THREE.Object3D();
 		earthSystem.add(earthMesh);
 		earthSystem.add(earthCloudsMesh);
-		earthSystem.rotation.z = -0.41; // earth's tilt TODO IMPROVE		
+		earthSystem.rotation.z = -0.41; // earth's tilt TODO IMPROVE
+		earthSystem.planetRadius = earthRadius;		
 		
 		scene.add(earthSystem);
 		
@@ -257,6 +294,8 @@ export class GLPlanetsService {
 			map: textureLoader.load( config.map )
 		});
 		let mesh = new THREE.Mesh( geometry, material );
+		
+		mesh.planetRadius = config.radius;
 	
 		return mesh;
 	}

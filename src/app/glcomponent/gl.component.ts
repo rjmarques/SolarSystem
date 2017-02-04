@@ -29,16 +29,16 @@ export class GLComponent {
 	// horizon and sun
 	private skyBox: any;
 
-	constructor(private GLPlanetsService: GLPlanetsService, private sunService: SunService, private planetService: PlanetService) {}
+	constructor(private glPlanetsService: GLPlanetsService, private sunService: SunService, private planetService: PlanetService) {}
 
 	private ngOnInit() {
 		this.planetSub = this.planetService.currentPlanet$.subscribe( planetName => {
-			console.log(planetName);
+			this.glPlanetsService.focusOn(planetName);
 		});
 
 		// gl operations
-		//this.init();
-		//this.animate();
+		this.init();
+		this.animate();
 	}
 
 	private ngOnDestroy() {
@@ -79,7 +79,7 @@ export class GLComponent {
 		this.createMilkyway();
 
 		this.sunService.createSun(this.scene, this.camera, this.textureLoader);
-		this.GLPlanetsService.createPlanets(this.scene, this.textureLoader);
+		this.glPlanetsService.createPlanets(this.scene, this.textureLoader);
 	}
 
 	private createMilkyway(): void { // TODO extract to service
@@ -113,7 +113,7 @@ export class GLComponent {
 
 	private updateScene(): void {
 		// update planets
-		this.GLPlanetsService.update();
+		this.glPlanetsService.update(this.controls, this.camera);
 
 		// update sun
 		this.sunService.update(this.camera);
