@@ -17,7 +17,7 @@ import { Uranus } from './uranus/uranus';
 import { Neptune } from './neptune/neptune';
 
 @Injectable()
-export class PlanetsService {
+export class GLPlanetsService {
 
 	private readonly REVOLUTION_TIME: number = 2000; // time is takes for a full earth day, in miliseconds
 

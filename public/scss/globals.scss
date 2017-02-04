@@ -1,3 +1,50 @@
 /** GLobal Colors **/
 $backgroundColor: black;
-$appGrey: #555; 
+
+$darkMain: #4c4c4c;
+$darkBorder: lighten($darkMain, 8%);
+$darkHover: lighten($darkMain, 10%);
+
+/** Font Colours **/
+$mainTextColor: darken(white, 15%);
+
+/** Font Sizes **/
+$fontSizeSmall: 13px;
+$fontSizeRegular: 14px;
+$fontSizeMedium: 15px;
+$fontSizeLarge: 18px;
+
+/** Paddings and Margins**/
+$globalPadding: 20px;
+
+/** Global mixins **/
+@mixin triangle($direction: up, $color: $darkMain, $size: 7px) {	
+	border-color: transparent;
+	border-style: solid;
+	border-width: $size;
+	height: 0;
+	margin: auto;
+	transition: none;
+	width: 0;	
+
+	&:before, &:after {
+		transition: none;
+	}
+
+	@if $direction == up {
+		border-bottom-color: $color;
+		border-top: none;
+	} @else if $direction == right {
+		border-left-color: $color;
+		border-right: none;
+	} @else if $direction == down {
+		border-top-color: $color;
+		border-bottom: none;
+	} @else if $direction == left {		
+		border-right-color: $color;
+		border-left: none;		
+	}
+}
+
+
+

@@ -1,0 +1,44 @@
+@import '../../../../public/scss/globals';
+
+.control-icon.planet {
+	background-image: url("./images/planet.png");
+}
+
+$caretSize: 7px;
+$distanceFromTop: 120%;
+
+.caret {
+	@include triangle();
+	position: absolute;
+	right: calc(50% - #{$caretSize});
+	top: $distanceFromTop + 2%;
+	z-index: 10;
+}
+
+ul {
+	background-color: $darkMain;
+	border: 1px solid $darkBorder;
+	border-radius: 3px;
+	position: absolute;
+	right: 0px;
+	margin-top: $caretSize;
+	padding: 4px 0px;
+	top: $distanceFromTop;
+
+	li {
+		cursor: pointer;
+		font-size: $fontSizeMedium;
+		font-weight: bold;
+		padding: 7px 20px;
+		text-align: center;
+		white-space: nowrap;
+
+		&:hover {
+			background-color: $darkHover;
+		}
+
+		span {
+			text-transform: capitalize;
+		}
+	}
+}

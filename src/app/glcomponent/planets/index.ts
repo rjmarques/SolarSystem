@@ -1,2 +1,2 @@
-export * from './planets.service';
+export * from './glplanets.service';
 export * from './planet';

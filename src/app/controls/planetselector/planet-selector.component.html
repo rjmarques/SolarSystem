@@ -1,0 +1,7 @@
+<div>
+	<div class="control-icon planet" (click)="toggle()"></div>
+	<span class="caret" [hidden]="!isOpen()" ></span>
+	<ul [hidden]="!isOpen()">
+		<li *ngFor="let planet of getPlanetList();" (click)="selectPlanet(planet)"><span>{{planet}}</span></li>
+	</ul>
+</div>

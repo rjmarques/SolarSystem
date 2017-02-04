@@ -1,15 +1,17 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 
 const THREE = require('three');
-const OrbitControls = require('three-orbit-controls')(THREE)
+const OrbitControls = require('three-orbit-controls')(THREE);
 
-import { PlanetsService, Planet } from './planets';
+import { GLPlanetsService, Planet } from './planets';
 import { SunService } from './sun';
+
+import { PlanetService } from '../shared/services';
 
 @Component({
 	selector: 'gl',
 	template: require('./gl.component.html'),
-	providers: [PlanetsService, SunService],
+	providers: [ GLPlanetsService, SunService ],
 	styles: [require('./gl.component.scss')]
 })
 
@@ -22,15 +24,26 @@ export class GLComponent {
 	private textureLoader: any;
 	private controls: any;
 
+	private planetSub: any;
+
 	// horizon and sun
 	private skyBox: any;
 
-	constructor(private planetsService: PlanetsService, private sunService: SunService) {}
+	constructor(private GLPlanetsService: GLPlanetsService, private sunService: SunService, private planetService: PlanetService) {}
 
 	private ngOnInit() {
-		this.init();
-		this.animate();
+		this.planetSub = this.planetService.currentPlanet$.subscribe( planetName => {
+			console.log(planetName);
+		});
+
+		// gl operations
+		//this.init();
+		//this.animate();
 	}
+
+	private ngOnDestroy() {
+		this.planetSub.unsubscribe();
+	}	
 
 	private init(): void {
 		this.scene = new THREE.Scene();
@@ -66,7 +79,7 @@ export class GLComponent {
 		this.createMilkyway();
 
 		this.sunService.createSun(this.scene, this.camera, this.textureLoader);
-		this.planetsService.createPlanets(this.scene, this.textureLoader);
+		this.GLPlanetsService.createPlanets(this.scene, this.textureLoader);
 	}
 
 	private createMilkyway(): void { // TODO extract to service
@@ -100,7 +113,7 @@ export class GLComponent {
 
 	private updateScene(): void {
 		// update planets
-		this.planetsService.update();
+		this.GLPlanetsService.update();
 
 		// update sun
 		this.sunService.update(this.camera);
