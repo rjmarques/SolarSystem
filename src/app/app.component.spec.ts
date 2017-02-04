@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { SharedModule } from './shared';
+import { ControlsModule } from './controls';
 import { GLModule } from './glcomponent';
+import { PlanetService } from './shared/services';
 
 import { AppComponent } from './app.component';
 
@@ -10,8 +11,11 @@ describe('App', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [
-				SharedModule,
+				ControlsModule,
 				GLModule,
+			],
+			providers: [
+				PlanetService
 			],
 			declarations: [
 				AppComponent
