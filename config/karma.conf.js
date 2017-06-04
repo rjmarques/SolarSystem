@@ -1,37 +1,48 @@
 var webpackConfig = require('./webpack.test');
 
 module.exports = function (config) {
-	var _config = {
-		basePath: '',
+  var _config = {
+    basePath: '',
 
-		frameworks: ['jasmine'],
+    customLaunchers: {
+        Chrome_travis_ci: {
+            base: 'Chrome',
+            flags: ['--no-sandbox']
+        }
+    },
 
-		files: [
-			{pattern: './config/karma-test-shim.js', watched: false}
-		],
+    frameworks: ['jasmine'],
 
-		preprocessors: {
-			'./config/karma-test-shim.js': ['webpack', 'sourcemap']
-		},
+    files: [
+      {pattern: './config/karma-test-shim.js', watched: false}
+    ],
 
-		webpack: webpackConfig,
+    preprocessors: {
+      './config/karma-test-shim.js': ['webpack', 'sourcemap']
+    },
 
-		webpackMiddleware: {
-			stats: 'errors-only'
-		},
+    webpack: webpackConfig,
 
-		webpackServer: {
-			noInfo: true
-		},
+    webpackMiddleware: {
+      stats: 'errors-only'
+    },
 
-		reporters: ['progress'],
-		port: 9876,
-		colors: true,
-		logLevel: config.LOG_INFO,
-		autoWatch: false,
-		browsers: ['PhantomJS'],
-		singleRun: true
-	};
+    webpackServer: {
+      noInfo: true
+    },
 
-	config.set(_config);
+    reporters: ['kjhtml'],
+    port: 9876,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    autoWatch: false,
+    browsers: ['Chrome'],
+    singleRun: true
+  };
+
+  if (process.env.TRAVIS) {
+    _config.browsers = ['Chrome_travis_ci'];
+  }
+
+  config.set(_config);
 };
