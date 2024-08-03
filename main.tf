@@ -12,14 +12,10 @@ locals {
   static_files = fileset("${path.module}/dist/", "**/*")
 }
 
-output "name" {
-  value = "solar"
+output "build_path" {
+  value = "${path.module}/dist/"
 }
 
-output "path" {
-  value = path.module
-}
-
-output "static_file_paths" {
-  value = [for file in local.static_files : "${path.module}/dist/${file}"]
+output "static_files" {
+  value = [for file in local.static_files : file]
 }
