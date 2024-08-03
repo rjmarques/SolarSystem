@@ -25,9 +25,9 @@ variable "bucket" {
 }
 
 resource "aws_s3_object" "solar_files" {
-  for_each = fileset("${path.module}/solar/", "**/*")
+  for_each = fileset("${path.module}/dist/", "**/*")
 
   bucket = var.bucket
   key    = "site1/${each.key}"
-  source = "${path.module}/solar/${each.key}"
+  source = "${path.module}/dist/${each.key}"
 }
