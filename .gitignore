@@ -11,8 +11,7 @@ __pycache__/
 # Ignore Node Modules
 node_modules
 
-# Ignore build and dist folders
-dist
+# Ignore build folder
 build
 
 # =========================
@@ -31,3 +30,6 @@ $RECYCLE.BIN/
 
 # Temporary Word/Office files
 ~$*
+
+# dist tarball
+dist.tar
