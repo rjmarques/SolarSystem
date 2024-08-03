@@ -12,6 +12,10 @@ locals {
   static_files = fileset("${path.module}/dist/", "**/*")
 }
 
+output "target_name" {
+  value = "solar"
+}
+
 output "build_path" {
   value = "${path.module}/dist/"
 }
