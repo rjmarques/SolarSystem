@@ -1,0 +1,40 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build static assets via Docker
+      # The build uses Node 9 / Webpack 2 (Angular 4 era), so we run it
+      # inside the project's Dockerfile to avoid dependency issues on
+      # modern Node. The `release` stage exports the built dist/ as a tar.
+      run: |
+        docker build -t solar-system . --output type=tar,dest=dist.tar --target release
+        rm -rf dist
+        tar -xf dist.tar
+        rm dist.tar
+
+    - name: Install Wrangler
+      # Install globally so wrangler-action skips its own install step.
+      # If it tried to install locally it would run `npm i` against this
+      # project's package.json, which has unresolvable Angular 4 peer deps.
+      run: npm install -g wrangler@latest
+
+    - name: Deploy to Cloudflare Workers
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        command: deploy
