@@ -26,6 +26,12 @@ jobs:
         tar -xf dist.tar
         rm dist.tar
 
+    - name: Install Wrangler
+      # Install globally so wrangler-action skips its own install step.
+      # If it tried to install locally it would run `npm i` against this
+      # project's package.json, which has unresolvable Angular 4 peer deps.
+      run: npm install -g wrangler@latest
+
     - name: Deploy to Cloudflare Workers
       uses: cloudflare/wrangler-action@v3
       with:
