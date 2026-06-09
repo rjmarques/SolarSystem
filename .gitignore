@@ -11,8 +11,8 @@ __pycache__/
 # Ignore Node Modules
 node_modules
 
-# Ignore build folder
-build
+# Ignore build folder (artifacts are rebuilt in CI on every deploy)
+dist
 
 # =========================
 # Windows detritus
